@@ -8,6 +8,8 @@ class Person(object):
     def __init__(self, _id, is_vaccinated, infection = None):
         # A person has an id, is_vaccinated and possibly an infection
         self._id = _id  # int
+        self.is_vaccinated = is_vaccinated 
+        self.is_infected = infection
         # TODO Define the other attributes of a person here
         pass
 
