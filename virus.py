@@ -6,7 +6,8 @@ class Virus(object):
         self.repro_rate = repro_rate
         self.mortality_rate = mortality_rate
         
-        pass
+    def __str__(self):
+        return f"Virus(name={self.name}, repro_rate={self.repro_rate}, mortality_rate={self.mortality_rate})"
 
 
 # Test this class
@@ -17,3 +18,4 @@ if __name__ == "__main__":
     assert virus.name == "HIV"
     assert virus.repro_rate == 0.8
     assert virus.mortality_rate == 0.3
+    print (virus)

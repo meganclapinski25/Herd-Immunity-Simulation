@@ -1,0 +1,5 @@
+Population Size:1000
+Vaccination Percentage:0.1
+Virus Name:Sniffles
+Mortality Rate:0.12
+Basic Reproduction Number:0.5
