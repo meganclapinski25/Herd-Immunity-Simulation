@@ -6,14 +6,14 @@ class Logger(object):
 
     
 
-    def write_metadata(self, pop_size, vacc_percentage, virus_name, mortality_rate,
-                       basic_repro_num):
-        with open(self.file_name, "a") as file:
-            file.write(f"Population Size:{pop_size}\n")
-            file.write(f"Vaccination Percentage:{vacc_percentage}\n")
-            file.write(f"Virus Name:{virus_name}\n")
-            file.write(f"Mortality Rate:{mortality_rate}\n")
-            file.write(f"Basic Reproduction Number:{basic_repro_num}\n")
+    def write_metadata(self, population_size, vaccination_percentage, virus_name, mortality_rate, repro_rate):
+        with open(self.file_name, 'a') as file:
+            file.write(f"Initial Population Size: {population_size}\n")
+            file.write(f"Virus Name: {virus_name}\n")
+            file.write(f"Virus Mortality Rate: {mortality_rate}\n")
+            file.write(f"Virus Reproduction Rate: {repro_rate}\n")
+            file.write(f"Vaccination Percentage: {vaccination_percentage * 100}%\n")
+            file.write("\n")
             
         
 
@@ -32,11 +32,10 @@ class Logger(object):
             file.write(f"Number of New Fatalities: {number_of_new_fatalities} \n")
     
 
-    def log_final_results(self, total_steps, pop_size, living_count, dead_count, vaccinated_count):
+    def log_final_results(self, total_time_steps, vaccinated_count, total_interactions):
         with open(self.file_name, 'a') as file:
-            file.write("Final Simulation Results:\n")
-            file.write(f"    Total Time Steps:{total_steps}\n")
-            file.write(f"    Initial Population Size:{pop_size}\n")
-            file.write(f"    Living Population:{living_count}\n")
-            file.write(f"    Deceased Population:{dead_count}\n")
-            file.write(f"    Vaccinated Population:{vaccinated_count}\n")
+            file.write("\n--- Simulation Ended ---\n")
+            file.write(f"Total Time Steps: {total_time_steps}\n")
+            file.write(f"Vaccinated Population: {vaccinated_count}\n")
+            file.write(f"Total Interactions: {total_interactions}\n")
+            
