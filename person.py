@@ -69,6 +69,28 @@ if __name__ == "__main__":
     survived = infected_person.did_survive_infection()
     assert survived in [True, False]
     
+    virus_instance = Virus("ebola", 0.5, 0.1)  # Assuming a Virus class is defined
+    infected_person = Person(4, False, virus_instance)
+    assert infected_person.id == 4
+    assert infected_person.is_alive is True
+    assert infected_person.is_vaccinated is False
+    assert infected_person.infected == virus_instance
+    assert survived in [True, False]
+    
+    vaccinated_person5 = Person(5, True)
+    assert vaccinated_person.id == 5
+    assert vaccinated_person.is_alive is True
+    assert vaccinated_person.is_vaccinated is True
+    assert vaccinated_person.infected is None
+    print(f"Test case 1 passed: {vaccinated_person5}")
+    
+    person_to_kill = Person(6, False)
+    person_to_kill.is_alive = False  # Simulate death
+    assert person_to_kill.is_alive is False
+    assert person_to_kill.is_vaccinated is False
+    assert person_to_kill.infected is None
+    print(f"Test case 6 passed: {person_to_kill}")
+    
     
     people = []
     for i in range(1, 101):

@@ -18,4 +18,15 @@ if __name__ == "__main__":
     assert virus.name == "HIV"
     assert virus.repro_rate == 0.8
     assert virus.mortality_rate == 0.3
+    
+    virus2 = Virus("test2", 0.2, 0.7)
+    assert virus.name == "test2"
+    assert virus.repro_rate == 0.2
+    assert virus.mortality_rate == 0.7
+    
+    
+    virus3 = Virus("test3", 0.9, 0.9)
+    assert virus.name == "test3"
+    assert virus.repro_rate == 0.9
+    assert virus.mortality_rate == 0.9
 
