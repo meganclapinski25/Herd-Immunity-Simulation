@@ -5,32 +5,30 @@ from virus import Virus
 
 class Person(object):
     # Define a person. 
-    def __init__(self, _id, is_vaccinated, infection = None):
+    def __init__(self, _id, is_vaccinated, infection = False):
         # A person has an id, is_vaccinated and possibly an infection
         self._id = _id  # int
         self.is_vaccinated = is_vaccinated 
         self.infected = infection
         # TODO Define the other attributes of a person here
         self.is_alive = True
-        pass
+        
 
     def did_survive_infection(self):
         # This method checks if a person survived an infection. 
         # TODO Only called if infection attribute is not None.
-        if self.infected is not None:
-            
-        # Check generate a random number between 0.0 - 1.0
-            chance = random.random()
-            if chance < self.infected.mortality_rate:
-                self.infected = None
+        if self.infected is  None:
+            return True
+        chance = random.random()
+        if chance < self.infected.mortality_rate:
+                
                 self.is_alive = False
                 return False
-            else:
+        else:
                 self.infected = None
                 self.is_vaccinated = True
-                self.is_alive = True
                 return True
-        return True
+        
         # If the number is less than the mortality rate of the 
         # person's infection they have passed away. 
         # Otherwise they have survived infection and they are now vaccinated. 
@@ -69,13 +67,13 @@ if __name__ == "__main__":
     assert infected_person.infected == virus
     assert infected_person.is_vaccinated is False
     survived = infected_person.did_survive_infection()
-    print(survived)
+    assert survived in [True, False]
     
     
     people = []
-    for i in range(1, 100):
-        infected_person = Person(4,False,virus)
-        people.append(infected_person)
+    for i in range(1, 101):
+        person = Person(i,False,virus)
+        people.append(person)
         
         
 
@@ -84,7 +82,7 @@ if __name__ == "__main__":
 
     for person in people:
         survived = person.did_survive_infection()
-        if survived and person.is_alive:
+        if survived:
             did_survived+=1
         else:
             did_not_survive+= 1
@@ -94,9 +92,6 @@ if __name__ == "__main__":
     print(f"  Deaths: {did_not_survive}")
 
 
-    # TODO When the loop is complete print your results.
-    # The results should roughly match the mortality rate of the virus
-    # For example if the mortality rate is 0.2 rough 20% of the people 
-    # should succumb. 
+    
 
     
