@@ -13,9 +13,10 @@ class Simulation(object):
         self.vacc_percentage = vacc_percentage
         self.initial_infected = initial_infected
         self.population = self._create_population(vacc_percentage, initial_infected)
-        self.newly_infected = []
-        self.all_infected = []
-        self.num_interactions = 0
+        self.total_infected = initial_infected
+        self.current_infected = self.initial_infected
+        self.total_vacc = int(vacc_percentage*self.pop_size)
+        self.total_dead = 0
 
     def _create_population(self, vacc_percentage, initial_infected):
         population = []
@@ -39,51 +40,67 @@ class Simulation(object):
         return population
 
     def _simulation_should_continue(self):
-       return any(person.infected for person in self.population)
+        if self.total_vacc + self.total_dead >= self.pop_size:
+            should_continue = False 
+        else:
+            should_continue = True
+
+        return should_continue
+
     
     def run(self):
         time_step_counter = 0
-        should_continue = True
-        
-        self.logger.write_metadata(self.pop_size, self.vacc_percentage, self.virus.name, self.virus.mortality_rate,self.virus.repro_rate)
+        self.logger.write_metadata(self.pop_size, self.vacc_percentage, self.virus.name, self.virus.mortality_rate, self.virus.repro_rate)
 
-        while should_continue:
+        while self._simulation_should_continue():
             time_step_counter += 1
-            num_interactions, new_infections = self.time_step()
-            self.logger.log_interactions(time_step_counter,num_interactions,new_infections)
+            self.time_step()
             should_continue = self._simulation_should_continue()
 
-        self.logger.log_final_results(self.time_step,self.pop_size,self.population)
+        return print(f'The simulation has ended after {self.time_step_counter} turns.')
 
     def time_step(self):
-        num_interactions = 0
-        new_infections = 0
+        newly_infected = []
+        interactions_count = 0  # Track total interactions
+        new_infections_count = 0  # Track new infections
 
-        # Create lists of uninfected and infected people
-        uninfected_people = [p for p in self.population if not p.infected and not p.is_vaccinated]
-        infected_people = [p for p in self.population if p.infected]
+        for person in self.population:
+            if person.infected and person.is_alive:
+                for _ in range(100):  # Each infected person interacts with 100 random people
+                    random_person = random.choice(self.population)
 
-        for infected_person in infected_people:
-            # Each infected person interacts with up to 100 healthy individuals
-            interactions = min(10, len(uninfected_people))  # Cap at the available healthy individuals
-            
-            for _ in range(interactions):
-                if not uninfected_people:  # Stop if no uninfected people are left
-                    break
+                    # Skip dead individuals
+                    if not random_person.is_alive:
+                        continue
+                    
+                    # Log interaction outcomes
+                    interactions_count += 1
 
-                # Choose a random uninfected person to interact with
-                random_person = random.choice(uninfected_people)
-                num_interactions += 1
+                    if random_person.is_vaccinated:
+                        self.logger.log_interactions(
+                            step_number=self.current_infected,
+                            number_of_interactions=interactions_count,
+                            number_of_new_infections=new_infections_count,
+                        )
 
-                # Determine if the random person gets infected based on the reproduction rate
-                if random.random() < self.virus.repro_rate:
-                    random_person.infected = True
-                    new_infections += 1
-                    uninfected_people.remove(random_person)  # Remove from uninfected list to avoid re-interaction
+                    elif random_person.infected:
+                        continue  # No need to log sick person interaction repeatedly
 
-        # Infect the newly infected people
-        self._infect_newly_infected()
-        return num_interactions, new_infections
+                    else:  # Healthy and unvaccinated person
+                        if random.random() < self.virus.repro_rate:
+                            newly_infected.append(random_person)
+                            new_infections_count += 1
+
+        # Apply infections to newly infected
+            for person in newly_infected:
+                person.infected = True
+                self.total_infected += 1
+
+            self.logger.log_interactions(
+                step_number=self.current_infected,
+                number_of_interactions=interactions_count,
+                number_of_new_infections=new_infections_count,
+            )
 
 
     def interaction(self, infected_person, random_person):
